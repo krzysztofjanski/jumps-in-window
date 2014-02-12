@@ -6,13 +6,19 @@ function! CommandOutputToLocationList(command)
     let [header, line_info] = [lines[0], lines[1:-2]]
     let loc_entries = []
     for line in line_info
+        let split_line = split(line)
         let loc_entry = {
-                    \'filename': split(line)[3],
-                    \'lnum': split(line)[1],
-                    \'col': split(line)[2],
-                    \'text': split(line)[0]
+                    \'lnum': split_line[1],
+                    \'col': split_line[2],
+                    \'text': split_line[0]
                     \}
-        if !filereadable(loc_entry['filename'])
+        if len(split_line) > 3
+            let loc_entry['filename'] = split_line[3]
+        endif
+
+        if !has_key(loc_entry, 'filename')
+            let buffer = ''
+        elseif !filereadable(loc_entry['filename'])
             let loc_entry['bufnr'] = bufnr("%")
             let buffer = loc_entry['bufnr']
         else
@@ -29,5 +35,5 @@ function! CommandOutputToLocationList(command)
     lopen
 endfunction
 
-command Lchanges call CommandOutputToLocationList("changes")
-command Ljumps call CommandOutputToLocationList("jumps")
+command! Lchanges call CommandOutputToLocationList("changes")
+command! Ljumps call CommandOutputToLocationList("jumps")
