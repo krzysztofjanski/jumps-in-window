@@ -12,16 +12,14 @@ function! CommandOutputToLocationList(command)
                     \'col': split(line)[2],
                     \'text': split(line)[0]
                     \}
-        call add(loc_entries, loc_entry)
-    endfor
-    for entry in loc_entries
-        if !filereadable(entry['filename'])
-            let entry['bufnr'] = bufnr("%")
-            let text_list = getbufline(entry['bufnr'], entry['lnum'])
-            let entry['text'] .= " ".text_list[0]
+        if !filereadable(loc_entry['filename'])
+            let loc_entry['bufnr'] = bufnr("%")
+            let text_list = getbufline(loc_entry['bufnr'], loc_entry['lnum'])
+            let loc_entry['text'] .= " ".text_list[0]
         else
-            let entry['text'] .= " ".getbufline(entry['filename'], entry['lnum'])[0]
+            let loc_entry['text'] .= " ".getbufline(loc_entry['filename'], loc_entry['lnum'])[0]
         endif
+        call add(loc_entries, loc_entry)
     endfor
     call setloclist(0, loc_entries)
     lopen
