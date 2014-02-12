@@ -14,10 +14,14 @@ function! CommandOutputToLocationList(command)
                     \}
         if !filereadable(loc_entry['filename'])
             let loc_entry['bufnr'] = bufnr("%")
-            let text_list = getbufline(loc_entry['bufnr'], loc_entry['lnum'])
-            let loc_entry['text'] .= " ".text_list[0]
+            let buffer = loc_entry['bufnr']
         else
-            let loc_entry['text'] .= " ".getbufline(loc_entry['filename'], loc_entry['lnum'])[0]
+            let buffer = loc_entry['filename']
+        endif
+        if bufexists(buffer)
+            let loc_entry['text'] .= " ".getbufline(buffer, loc_entry['lnum'])[0]
+        else
+            let loc_entry['text'] .= " ".buffer
         endif
         call add(loc_entries, loc_entry)
     endfor
