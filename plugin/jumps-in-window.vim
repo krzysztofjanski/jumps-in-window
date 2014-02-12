@@ -29,10 +29,5 @@ function! CommandOutputToLocationList(command)
     lopen
 endfunction
 
-function! ChangesInLocationList()
-    call CommandOutputToLocationList("changes")
-endfunction
-
-function! JumpsInLocationList()
-    call CommandOutputToLocationList("jumps")
-endfunction
+command Lchanges call CommandOutputToLocationList("changes")
+command Ljumps call CommandOutputToLocationList("jumps")
